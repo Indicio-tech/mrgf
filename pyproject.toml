@@ -7,7 +7,7 @@ license = "Apache-2.0"
 
 [tool.poetry.dependencies]
 python = "^3.6.9"
-aries-cloudagent = "^0.6.0"
+aries-cloudagent = {git = "https://github.com/hyperledger/aries-cloudagent-python.git", rev = "main"}
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.13.0"
