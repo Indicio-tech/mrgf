@@ -5,6 +5,17 @@ from typing import List, Optional, cast
 from aries_cloudagent.config.injection_context import InjectionContext
 from pydantic import BaseModel
 
+from .models import (
+    Condition,
+    Definition,
+    Duty,
+    GovernaceFramework,
+    JsonLDDocument,
+    NamedObject,
+    Privilege,
+    Rule,
+)
+
 
 class Config(BaseModel):
     paths: List[str] = []
@@ -31,3 +42,16 @@ async def setup(context: InjectionContext):
     for url in config.urls:
         # TODO load urls into some structure
         pass
+
+
+__all__ = [
+    "Condition",
+    "Config",
+    "Definition",
+    "Duty",
+    "GovernaceFramework",
+    "JsonLDDocument",
+    "NamedObject",
+    "Privilege",
+    "Rule",
+]

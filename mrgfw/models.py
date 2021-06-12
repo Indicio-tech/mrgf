@@ -14,6 +14,7 @@ class JsonLDDocument(BaseModel):
         """Normalize @context to list."""
         if not isinstance(value, list):
             return [value]
+        return value
 
 
 class NamedObject(BaseModel):
