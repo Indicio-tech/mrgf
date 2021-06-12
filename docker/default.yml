@@ -1,0 +1,27 @@
+label: Aries Cloud Agent + DIDComm Resolver
+
+# Admin
+admin: [0.0.0.0, 3001]
+admin-insecure-mode: true
+
+plugin:
+  - mrgfw
+
+# Transport
+inbound-transport:
+  - [http, 0.0.0.0, 3000]
+outbound-transport: http
+endpoint:
+  - http://localhost:3000
+no-ledger: true
+
+# Connections
+debug-connections: true
+debug-credentials: true
+debug-presentations: true
+auto-accept-invites: true
+auto-accept-requests: true
+
+# Enable undelivered queue
+# Important for communication with toolbox over http (as opposed to ws)
+enable-undelivered-queue: true
