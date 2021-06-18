@@ -1,7 +1,8 @@
 """Data structures for holding governance frameworks."""
 
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, Set, Union
 from pydantic import BaseModel, Extra, Field, validator
+from pydantic.class_validators import root_validator
 from typing_extensions import Annotated
 
 
@@ -67,6 +68,7 @@ class GovernaceFramework(JsonLDDocument):
 
     class Config:
         extra = Extra.allow
+        underscore_attrs_are_private = True
 
     # Required
     name: str
@@ -87,3 +89,23 @@ class GovernaceFramework(JsonLDDocument):
     geos: Optional[List[str]]
     logo: Optional[str] = None
     description: Optional[str] = None
+
+    # Lazy loaded maps
+    _privilege_to_rule: dict = {}
+    _role_to_promotion_rule: dict = {}
+
+
+class Principle(BaseModel):
+    """Subject about which rules are tested."""
+
+    class Config:
+        extra = Extra.allow
+
+    id: Optional[str] = None
+    roles: Optional[Set[str]] = None
+
+    @root_validator(pre=True)
+    @classmethod
+    def _id_or_roles_present(cls, values):
+        if "id" not in values and "roles" not in values:
+            raise ValueError("either id or roles must have a meaningful value")
