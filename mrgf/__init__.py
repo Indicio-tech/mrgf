@@ -1,4 +1,4 @@
-"""Setup MRGFW plugin."""
+"""Setup MRGF plugin."""
 
 from typing import List, Optional, cast
 
@@ -29,7 +29,7 @@ async def setup(context: InjectionContext):
     if not plugin_config:
         return
 
-    config = cast(Optional[dict], plugin_config.get("mrgfw"))
+    config = cast(Optional[dict], plugin_config.get("mrgf"))
     if not config:
         return
 

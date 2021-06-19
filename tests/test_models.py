@@ -1,6 +1,6 @@
 """Test data structures."""
 
-from mrgfw import GovernaceFramework
+from mrgf import GovernaceFramework
 
 SAMPLE_GFW = {
     "@context": [

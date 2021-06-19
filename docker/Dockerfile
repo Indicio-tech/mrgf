@@ -3,7 +3,7 @@ FROM bcgovimages/von-image:py36-1.16-0
 RUN pip3 install --no-cache-dir poetry
 
 USER root
-COPY ./mrgfw mrgfw
+COPY ./mrgf mrgf
 COPY ./README.md .
 COPY ./setup.py .
 COPY ./pyproject.toml .

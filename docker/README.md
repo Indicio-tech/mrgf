@@ -1,4 +1,4 @@
-Running ACA-Py with the mrgfw Plugin
+Running ACA-Py with the mrgf Plugin
 ======================================
 
 ## Quickstart
@@ -6,26 +6,26 @@ Running ACA-Py with the mrgfw Plugin
 To build the container, run from project root:
 
 ```sh
-$ docker build -f docker/Dockerfile -t acapy-mrgfw .
+$ docker build -f docker/Dockerfile -t acapy-mrgf .
 ```
 
 To start an agent using the default configuration:
 
 ```sh
-$ docker run -it -p 3000:3000 -p 3001:3001 --rm acapy-mrgfw
+$ docker run -it -p 3000:3000 -p 3001:3001 --rm acapy-mrgf
 ```
 
 For development purposes, it is often useful to use local versions of the code
 rather than rebuilding a new container with the changes.
 
 To start an agent using the default configuration and local versions of ACA-Py
-and/or the mrgfw plugin (paths must be adapted to your environment):
+and/or the mrgf plugin (paths must be adapted to your environment):
 
 ```sh
 $ docker run -it -p 3000:3000 -p 3001:3001 --rm \
 	-v ../aries-cloudagent-python/aries_cloudagent:/home/indy/site-packages/aries_cloudagent:z \
-	-v ../aries-acapy-mrgfw/mrgfw:/home/indy/aries-acapy-plugin-mrgfw/mrgfw:z \
-	acapy-mrgfw
+	-v ../aries-acapy-mrgf/mrgf:/home/indy/aries-acapy-plugin-mrgf/mrgf:z \
+	acapy-mrgf
 ```
 
 ## Adjusting Parameters
@@ -33,7 +33,7 @@ $ docker run -it -p 3000:3000 -p 3001:3001 --rm \
 For each of the commands listed below, ensure the image has been built:
 
 ```sh
-$ docker build -t acapy-mrgfw .
+$ docker build -t acapy-mrgf .
 ```
 
 #### Listing configuration options
@@ -41,7 +41,7 @@ $ docker build -t acapy-mrgfw .
 To see a list of configuration options, run:
 
 ```sh
-$ docker run -it --rm acapy-mrgfw start --help
+$ docker run -it --rm acapy-mrgf start --help
 ```
 
 #### Command line
@@ -59,7 +59,7 @@ different port), while keeping the defaults:
 
 ```sh
 $ docker run -it -p 3000:3000 -p 3003:3003 --rm \
-    acapy-mrgfw start --arg-file default.yml --admin 0.0.0.0 3003
+    acapy-mrgf start --arg-file default.yml --admin 0.0.0.0 3003
 ```
 
 #### Configuration files
@@ -70,7 +70,7 @@ and specifying the file on startup:
 ```sh
 $ docker run -it -p 3000:3000 -p 3001:3001 --rm \
     -v ./configs:/local/configs:z \
-    acapy-mrgfw start --arg-file /local/configs/my_config.yml
+    acapy-mrgf start --arg-file /local/configs/my_config.yml
 ```
 
 #### Environment
@@ -80,5 +80,5 @@ Compose `env` files to load configuration when appropriate. To see a list of
 configuration options and the mapping to environment variables map, run:
 
 ```sh
-$ docker run -it --rm acapy-mrgfw start --help
+$ docker run -it --rm acapy-mrgf start --help
 ```

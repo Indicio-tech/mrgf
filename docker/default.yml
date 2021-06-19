@@ -5,7 +5,7 @@ admin: [0.0.0.0, 3001]
 admin-insecure-mode: true
 
 plugin:
-  - mrgfw
+  - mrgf
 
 # Transport
 inbound-transport:

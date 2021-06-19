@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "mrgfw"
+name = "mrgf"
 version = "0.1.0"
 description = "Aries Cloud Agent - Python Machine Readable Governance Framework helpers"
 authors = ["Daniel Bluhm <dbluhm@pm.me>"]
