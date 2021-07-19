@@ -91,6 +91,7 @@ class GovernaceFramework(JsonLDDocument):
     description: Optional[str] = None
 
     # Lazy loaded maps
+    # TODO populate these maps
     _privilege_to_rule: dict = {}
     _role_to_promotion_rule: dict = {}
 
