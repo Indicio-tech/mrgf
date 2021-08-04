@@ -1,10 +1,10 @@
-"""Decorators for use with Machine Readable Governance Frameworks and handlers."""
+"""Selector used to route principals to appropriate handlers for their privileges."""
 
 from asyncio import iscoroutinefunction
 from functools import wraps
 from typing import Awaitable, Callable, Dict, Union, cast
 
-from .models import Principal
+from .governance_framework import Principal
 
 
 PrincipalFinder = Callable[..., Union[Principal, dict]]

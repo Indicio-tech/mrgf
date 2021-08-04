@@ -1,7 +1,6 @@
 """Test data structures."""
 
-from mrgf.models import Principal
-from mrgf import GovernaceFramework
+from mrgf import GovernanceFramework, Principal
 
 SAMPLE_GFW = {
     "@context": [
@@ -63,10 +62,19 @@ SAMPLE_GFW = {
 
 
 def test_parse_gfw():
-    gfw = GovernaceFramework(**SAMPLE_GFW)
+    gfw = GovernanceFramework(**SAMPLE_GFW)
     assert gfw.version == "0.1"
     assert gfw.privileges[0].name == "privilege-issuers"
     assert gfw.define[0].name == "entity"
+
+
+def test_evaluate():
+    framework = GovernanceFramework(**SAMPLE_GFW)
+    assert framework.evaluate(Principal(roles={"one"})) == {
+        "privilege-issuers",
+        "privilege-schemas",
+        "connections-created",
+    }
 
 
 def test_principle():

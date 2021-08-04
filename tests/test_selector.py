@@ -1,7 +1,7 @@
 """Test mrgf.decorators."""
 
 import pytest
-from mrgf.decorators import Selector
+from mrgf import Selector
 
 
 @pytest.mark.asyncio
