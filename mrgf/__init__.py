@@ -19,7 +19,7 @@ from .governance_framework import (
     Rule,
 )
 from .selector import Selector
-from .acapy import request_handler_principle_finder
+from .acapy import request_handler_principal_finder
 
 
 LOGGER = logging.getLogger(__name__)
@@ -69,5 +69,5 @@ __all__ = [
     "Principal",
     "Rule",
     "Selector",
-    "request_handler_principle_finder",
+    "request_handler_principal_finder",
 ]

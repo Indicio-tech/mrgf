@@ -10,7 +10,7 @@ class NoLoadedFramework(Exception):
     """Raised when no framework is loaded."""
 
 
-async def request_handler_principle_finder(
+async def request_handler_principal_finder(
     handler, context: RequestContext, responder: BaseResponder
 ) -> Principal:
     """Retrieve connection and metadata, evaluate MRGF rules, and return Principal."""
