@@ -32,7 +32,11 @@ def _ensure_principal(value: Union[Principal, dict]) -> Principal:
     if isinstance(value, dict):
         return Principal(**value)
 
-    raise TypeError("Invalid principal; expected dict or Principal")
+    raise TypeError(
+        "Invalid principal; expected dict or Principal, received {}".format(
+            type(value).__name__
+        )
+    )
 
 
 class Selector:
