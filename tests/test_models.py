@@ -1,5 +1,6 @@
 """Test data structures."""
 
+from mrgf.models import Principal
 from mrgf import GovernaceFramework
 
 SAMPLE_GFW = {
@@ -9,11 +10,11 @@ SAMPLE_GFW = {
     ],
     "name": "sample",
     "version": "0.1",
-    "data_uri": "some location",
+    "data_uri": "http://example.com/some/location",
     "description": "sample",
     "roles": ["one", "two"],
     "define": [
-        {"name": "entity", "id": "DID here"},
+        {"name": "entity", "id": "DID here", "describe": "asdfasdf"},
         {"name": "entity-test", "id": "DID here"},
         {
             "name": "approved-issuer-1",
@@ -66,3 +67,7 @@ def test_parse_gfw():
     assert gfw.version == "0.1"
     assert gfw.privileges[0].name == "privilege-issuers"
     assert gfw.define[0].name == "entity"
+
+
+def test_principle():
+    assert Principal(roles="test")

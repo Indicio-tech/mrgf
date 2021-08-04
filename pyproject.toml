@@ -10,6 +10,7 @@ python = "^3.6.9"
 aries-cloudagent = ">=0.6.0"
 pydantic = "^1.8.2"
 typing-extensions = "^3.10.0"
+sgl = "^0.9.17"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.13.0"

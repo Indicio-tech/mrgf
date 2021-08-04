@@ -43,7 +43,8 @@ class Condition(BaseModel):
 
     n: Optional[int] = None
     roles: Optional[str] = None
-    op: Optional[str] = None
+    # "op" is listed in docs but not actually supported
+    # op: Optional[str] = None
     any: Optional[List["Condition"]] = None
     all: Optional[List["Condition"]] = None
 
@@ -96,7 +97,7 @@ class GovernaceFramework(JsonLDDocument):
     _role_to_promotion_rule: dict = {}
 
 
-class Principle(BaseModel):
+class Principal(BaseModel):
     """Subject about which rules are tested."""
 
     class Config:
@@ -104,9 +105,17 @@ class Principle(BaseModel):
 
     id: Optional[str] = None
     roles: Optional[Set[str]] = None
+    privileges: Optional[Set[Privilege]] = None
 
     @root_validator(pre=True)
     @classmethod
     def _id_or_roles_present(cls, values):
         if "id" not in values and "roles" not in values:
             raise ValueError("either id or roles must have a meaningful value")
+        return values
+
+    @validator("roles", "privileges", pre=True)
+    @classmethod
+    def _transform_singular_to_set(cls, value):
+        if not isinstance(value, set):
+            return {value}

@@ -828,6 +828,14 @@ security = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)"]
 socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
 
 [[package]]
+name = "sgl"
+version = "0.9.17"
+description = "Simple Grant Language"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "simplejson"
 version = "3.17.3"
 description = "Simple, fast, extensible JSON encoder/decoder for Python"
@@ -975,7 +983,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6.9"
-content-hash = "66795bf726a949c18b4de28d6ef28e39b32d7bf3733e65f3e43c0ea7da09255f"
+content-hash = "0e8f28a620c41ce06e2ca977daf25976d4e9e12bec0f1a75d42237c2d0b7fbcc"
 
 [metadata.files]
 aiohttp = [
@@ -1599,6 +1607,9 @@ regex = [
 requests = [
     {file = "requests-2.25.1-py2.py3-none-any.whl", hash = "sha256:c210084e36a42ae6b9219e00e48287def368a26d03a048ddad7bfee44f75871e"},
     {file = "requests-2.25.1.tar.gz", hash = "sha256:27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804"},
+]
+sgl = [
+    {file = "sgl-0.9.17.tar.gz", hash = "sha256:026ea93f3bc7690b10d93119257616679f260d7710ea7abe0bd713b598f33e38"},
 ]
 simplejson = [
     {file = "simplejson-3.17.3-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:18302970ce341c3626433d4ffbdac19c7cca3d6e2d54b12778bcb8095f695473"},
