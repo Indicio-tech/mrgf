@@ -14,7 +14,7 @@ class RequestHandlerPrincipleFinder:
     """Principle finder for use with ACA-Py Message Handlers."""
 
     async def __call__(
-        self, context: RequestContext, responder: BaseResponder
+        self, handler, context: RequestContext, responder: BaseResponder
     ) -> Principal:
         """Retrieve connection and metadata, evaluate MRGF rules, and return Principal."""
         conn = context.connection_record
