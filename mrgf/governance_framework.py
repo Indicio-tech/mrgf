@@ -74,7 +74,7 @@ class Principal(BaseModel):
 
     id: Optional[str] = None
     roles: Optional[Set[str]] = None
-    privileges: Optional[Set[Privilege]] = None
+    privileges: Optional[Set[str]] = None
 
     @root_validator(pre=True)
     @classmethod
