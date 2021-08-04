@@ -2,7 +2,7 @@
 
 import json
 import logging
-from typing import Optional, TextIO
+from typing import Optional
 
 from aries_cloudagent.config.injection_context import InjectionContext
 from pydantic import BaseModel
@@ -42,7 +42,8 @@ async def setup(context: InjectionContext):
     framework = None
     if config.path:
         with open(config.path) as gov_file:
-            framework = read_governance_file(gov_file)
+            gov_json = json.load(gov_file)
+            framework = GovernanceFramework(**gov_json)
 
     if config.url and not framework:
         # TODO load from url
@@ -52,12 +53,6 @@ async def setup(context: InjectionContext):
         context.injector.bind_instance(GovernanceFramework, framework)
     else:
         LOGGER.warning("No governance file loaded")
-
-
-def read_governance_file(gov_file: TextIO) -> GovernanceFramework:
-    """Read mgrf data from file."""
-    gov_json = json.load(gov_file)
-    return GovernanceFramework(**gov_json)
 
 
 __all__ = [
