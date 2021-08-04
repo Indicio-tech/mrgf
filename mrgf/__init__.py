@@ -32,13 +32,14 @@ class Config(BaseModel):
     url: Optional[str] = None
 
 
-async def setup(context: InjectionContext):
+async def setup(context: InjectionContext, config: Optional[Config] = None):
     """Set up plugin for use in ACA-Py."""
-    try:
-        config = Config(**context.settings["plugin_config"]["mrgf"])
-    except KeyError:
-        LOGGER.warning("No MRGF configuration found")
-        return
+    if not config:
+        try:
+            config = Config(**context.settings["plugin_config"]["mrgf"])
+        except KeyError:
+            LOGGER.warning("No MRGF configuration found")
+            return
 
     framework = None
     if config.path:
