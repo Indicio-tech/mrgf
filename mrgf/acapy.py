@@ -26,7 +26,7 @@ async def request_context_principal_finder(context: RequestContext) -> Principal
         return Principal(id=conn.connection_id, privileges=privileges, **metadata)
 
 
-async def request_handler_principal_finder(*args, **kwargs):
+async def request_handler_principal_finder(*args, **kwargs) -> Principal:
     """Extract context and return principal."""
     [context] = [arg for arg in args if isinstance(arg, RequestContext)]
-    return request_context_principal_finder(context)
+    return await request_context_principal_finder(context)
