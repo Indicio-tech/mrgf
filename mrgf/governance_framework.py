@@ -44,7 +44,7 @@ class Condition(BaseModel):
         extra = Extra.allow
 
     n: Optional[int] = None
-    roles: Optional[Union[List[str], str]] = None
+    roles: Optional[str] = None
     # "op" is listed in docs but not actually supported
     # op: Optional[str] = None
     any: Optional[List["Condition"]] = None
