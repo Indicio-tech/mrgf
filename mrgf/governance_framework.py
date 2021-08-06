@@ -73,8 +73,8 @@ class Principal(BaseModel):
         extra = Extra.allow
 
     id: Optional[str] = None
-    roles: Optional[Set[str]] = None
-    privileges: Optional[Set[str]] = None
+    roles: Set[str] = set()
+    privileges: Set[str] = set()
 
     @root_validator(pre=True)
     @classmethod
@@ -86,8 +86,15 @@ class Principal(BaseModel):
     @validator("roles", "privileges", pre=True)
     @classmethod
     def _transform_singular_to_set(cls, value):
-        if not isinstance(value, set):
+        if isinstance(value, str):
             return {value}
+        return value
+
+    @validator("roles", "privileges", pre=True)
+    @classmethod
+    def _transform_list_to_set(cls, value):
+        if isinstance(value, list):
+            return set(value)
         return value
 
 
