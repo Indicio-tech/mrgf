@@ -77,7 +77,7 @@ def test_evaluate():
     }
 
 
-def test_principle():
+def test_principal():
     assert Principal(roles="test")
     assert Principal(roles={"test"})
     assert Principal(roles=["test"])

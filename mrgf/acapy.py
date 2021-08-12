@@ -11,7 +11,7 @@ class NoLoadedFramework(Exception):
     """Raised when no framework is loaded."""
 
 
-async def connection_to_principle(
+async def connection_to_principal(
     session: ProfileSession, connection: Union[str, ConnRecord]
 ) -> Principal:
     """Return principal from connection."""
@@ -38,7 +38,7 @@ async def connection_to_principle(
 async def request_context_principal_finder(context: RequestContext) -> Principal:
     """Retrieve connection and metadata, evaluate MRGF rules, and return Principal."""
     async with context.session() as session:
-        return await connection_to_principle(session, context.connection_record)
+        return await connection_to_principal(session, context.connection_record)
 
 
 async def request_handler_principal_finder(*args, **kwargs) -> Principal:
