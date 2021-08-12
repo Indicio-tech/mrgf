@@ -1,5 +1,7 @@
 """Elements for integrating with ACA-Py."""
-from typing import Set
+from typing import Set, Union
+from aries_cloudagent.connections.models.conn_record import ConnRecord
+from aries_cloudagent.core.profile import ProfileSession
 from aries_cloudagent.messaging.request_context import RequestContext
 
 from .governance_framework import GovernanceFramework, Principal
@@ -9,21 +11,34 @@ class NoLoadedFramework(Exception):
     """Raised when no framework is loaded."""
 
 
-async def request_context_principal_finder(context: RequestContext) -> Principal:
-    """Retrieve connection and metadata, evaluate MRGF rules, and return Principal."""
-    conn = context.connection_record
-    framework = context.inject(GovernanceFramework, required=False)
+async def connection_to_principle(
+    session: ProfileSession, connection: Union[str, ConnRecord]
+) -> Principal:
+    """Return principal from connection."""
+    if isinstance(connection, str):
+        conn_record = ConnRecord.retrieve_by_id(session, connection)
+    elif isinstance(connection, ConnRecord):
+        conn_record = connection
+    else:
+        raise TypeError("connection must be connection id or ConnRecord")
+
+    framework = session.inject(GovernanceFramework, required=False)
     if not framework:
         raise NoLoadedFramework(
             "No machine readable governance framework found in context"
         )
 
-    async with context.session() as session:
-        metadata = await conn.metadata_get_all(session)
+    metadata = await conn_record.metadata_get_all(session)
 
-        initial_principal = Principal(id=conn.connection_id, **metadata)
-        privileges: Set[str] = framework.evaluate(initial_principal)
-        return Principal(id=conn.connection_id, privileges=privileges, **metadata)
+    initial = Principal(id=conn_record.connection_id, **metadata)
+    privileges: Set[str] = framework.evaluate(initial)
+    return Principal(id=conn_record.connection_id, privileges=privileges, **metadata)
+
+
+async def request_context_principal_finder(context: RequestContext) -> Principal:
+    """Retrieve connection and metadata, evaluate MRGF rules, and return Principal."""
+    async with context.session() as session:
+        return await connection_to_principle(session, context.connection_record)
 
 
 async def request_handler_principal_finder(*args, **kwargs) -> Principal:
