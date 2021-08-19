@@ -1,5 +1,6 @@
 """Test data structures."""
 
+from mrgf.governance_framework import Privilege
 from mrgf import GovernanceFramework, Principal
 
 SAMPLE_GFW = {
@@ -64,7 +65,9 @@ SAMPLE_GFW = {
 def test_parse_gfw():
     gfw = GovernanceFramework(**SAMPLE_GFW)
     assert gfw.version == "0.1"
+    assert gfw.privileges
     assert gfw.privileges[0].name == "privilege-issuers"
+    assert gfw.define
     assert gfw.define[0].name == "entity"
 
 
@@ -81,3 +84,8 @@ def test_principal():
     assert Principal(roles="test")
     assert Principal(roles={"test"})
     assert Principal(roles=["test"])
+
+
+def test_extra_on_named():
+    priv = Privilege(name="test", another_value="test", uri="uri")
+    assert priv.extra["another_value"] == "test"

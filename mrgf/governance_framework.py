@@ -26,6 +26,11 @@ class NamedObject(BaseModel):
 
     name: str
 
+    @property
+    def extra(self) -> Dict[str, Any]:
+        """Return a dictionary with access to values from extra properties."""
+        return self.__dict__
+
 
 class Definition(NamedObject):
     id: str
