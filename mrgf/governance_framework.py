@@ -1,6 +1,6 @@
 """Data structures for holding governance frameworks."""
 
-from typing import Any, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Set, Union
 from pydantic import BaseModel, Extra, Field, validator
 from pydantic.class_validators import root_validator
 from typing_extensions import Annotated
@@ -113,7 +113,7 @@ class GovernanceFramework(JsonLDDocument):
     # Governance
     roles: Optional[List[str]] = None
     define: Optional[List[Definition]] = None
-    rules: Optional[List[Rule]] = None
+    rules: List[Rule] = []
     privileges: Optional[List[Privilege]]
     duties: Optional[List[Duty]]
 
@@ -125,8 +125,18 @@ class GovernanceFramework(JsonLDDocument):
     logo: Optional[str] = None
     description: Optional[str] = None
 
+    _privilege_map: Optional[Dict[str, Privilege]] = None
+
+    def privilege(self, name: str):
+        """Retrieve a specific privilege by name."""
+        if self._privilege_map is None:
+            self._privilege_map = (
+                {priv.name: priv for priv in self.privileges} if self.privileges else {}
+            )
+        return self._privilege_map[name]
+
     def evaluate(self, principal: Principal) -> Set[str]:
-        """Evalue rules on principal and return set of granted privileges."""
+        """Evaluate rules on principal and return set of granted privileges."""
         privileges = set()
         size_on_previous_iteration = -1
         while size_on_previous_iteration < len(privileges):
