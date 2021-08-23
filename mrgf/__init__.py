@@ -7,6 +7,11 @@ from typing import Optional
 from aries_cloudagent.config.injection_context import InjectionContext
 from pydantic import BaseModel
 
+from .acapy import (
+    connection_to_principal,
+    request_context_principal_finder,
+    request_handler_principal_finder,
+)
 from .governance_framework import (
     Condition,
     Definition,
@@ -14,12 +19,11 @@ from .governance_framework import (
     GovernanceFramework,
     JsonLDDocument,
     NamedObject,
-    Privilege,
     Principal,
+    Privilege,
     Rule,
 )
 from .selector import Selector
-from .acapy import request_handler_principal_finder, request_context_principal_finder
 
 
 LOGGER = logging.getLogger(__name__)
@@ -71,4 +75,5 @@ __all__ = [
     "Selector",
     "request_handler_principal_finder",
     "request_context_principal_finder",
+    "connection_to_principal",
 ]
