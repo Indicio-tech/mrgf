@@ -9,6 +9,7 @@ from pydantic import BaseModel
 
 from .acapy import (
     connection_to_principal,
+    connections_where,
     request_context_principal_finder,
     request_handler_principal_finder,
 )
@@ -76,4 +77,5 @@ __all__ = [
     "request_handler_principal_finder",
     "request_context_principal_finder",
     "connection_to_principal",
+    "connections_where",
 ]

@@ -1,5 +1,5 @@
 """Elements for integrating with ACA-Py."""
-from typing import Set, Union
+from typing import Callable, Sequence, Set, Union, cast
 from aries_cloudagent.connections.models.conn_record import ConnRecord
 from aries_cloudagent.core.profile import ProfileSession
 from aries_cloudagent.messaging.request_context import RequestContext
@@ -16,7 +16,7 @@ async def connection_to_principal(
 ) -> Principal:
     """Return principal from connection."""
     if isinstance(connection, str):
-        conn_record = ConnRecord.retrieve_by_id(session, connection)
+        conn_record = await ConnRecord.retrieve_by_id(session, connection)
     elif isinstance(connection, ConnRecord):
         conn_record = connection
     else:
@@ -45,3 +45,14 @@ async def request_handler_principal_finder(*args, **kwargs) -> Principal:
     """Extract context and return principal."""
     [context] = [arg for arg in args if isinstance(arg, RequestContext)]
     return await request_context_principal_finder(context)
+
+
+async def connections_where(session: ProfileSession, condition: Callable):
+    """Return connections where the principal found on connection meets condition."""
+    # TODO replace this with a separate lookup table or connection metadata
+    connections = cast(Sequence[ConnRecord], await ConnRecord.query(session))
+    return [
+        connection
+        for connection in connections
+        if condition(await connection_to_principal(session, connection))
+    ]
