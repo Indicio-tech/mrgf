@@ -29,18 +29,21 @@ MRGF_RFC = (
 )
 async def set_mrgf(request: web.Request):
     """Set MRGF."""
-    context: AdminRequestContext = request["context"]
     body = await request.json() if request.body_exists else None
     if not body:
         raise web.HTTPBadRequest(reason="Expected mrgf as json body")
 
+    context: AdminRequestContext = request["context"]
+    framework = context.inject(GovernanceFramework)
+    assert framework
+
     try:
-        mrgf = GovernanceFramework(**body)
+        loaded = GovernanceFramework(**body)
     except ValueError as err:
         raise web.HTTPBadRequest(reason="Bad MRGF passed: {}".format(err))
 
-    LOGGER.warning("Replacing MRGF with new MRGF from routes: %s", mrgf)
-    context.injector.bind_instance(GovernanceFramework, mrgf)
+    LOGGER.warning("Replacing MRGF with new MRGF from routes: %s", loaded)
+    framework.update(loaded)
     return web.json_response({"success": True})
 
 

@@ -150,3 +150,10 @@ class GovernanceFramework(JsonLDDocument):
                 if satisfies(principal.dict(), rule.dict()):
                     privileges.update(rule.grant)
         return privileges
+
+    def update(self, other: "GovernanceFramework"):
+        """Update this framework with another.
+
+        This follows dictionary update semantics.
+        """
+        self.__dict__.update(other.dict())
