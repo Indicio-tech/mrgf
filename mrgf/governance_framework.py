@@ -156,4 +156,4 @@ class GovernanceFramework(JsonLDDocument):
 
         This follows dictionary update semantics.
         """
-        self.__dict__.update(other.dict())
+        self.__dict__.update(other.__dict__)
