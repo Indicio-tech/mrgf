@@ -89,3 +89,15 @@ def test_principal():
 def test_extra_on_named():
     priv = Privilege(name="test", another_value="test", uri="uri")
     assert priv.extra["another_value"] == "test"
+
+
+def test_update():
+    gfw = GovernanceFramework(**SAMPLE_GFW)
+    other = GovernanceFramework(**SAMPLE_GFW)
+    temp = gfw
+    other.privileges = []
+    gfw.update(other)
+    assert gfw.privileges == []
+    assert gfw == other
+    assert gfw is not other
+    assert temp is gfw
