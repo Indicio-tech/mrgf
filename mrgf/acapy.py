@@ -36,16 +36,16 @@ async def connection_to_principal(
     return Principal(id=conn_record.connection_id, privileges=privileges, **metadata)
 
 
-async def request_context_principal_finder(context: RequestContext) -> Principal:
+async def context_to_principal(context: RequestContext) -> Principal:
     """Retrieve connection and metadata, evaluate MRGF rules, and return Principal."""
     async with context.session() as session:
         return await connection_to_principal(session, context.connection_record)
 
 
-async def request_handler_principal_finder(*args, **kwargs) -> Principal:
+async def handler_args_to_principal(*args, **kwargs) -> Principal:
     """Extract context and return principal."""
     [context] = [arg for arg in args if isinstance(arg, RequestContext)]
-    return await request_context_principal_finder(context)
+    return await context_to_principal(context)
 
 
 async def connections_where(session: ProfileSession, condition: Callable):
