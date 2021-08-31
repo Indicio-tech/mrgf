@@ -22,6 +22,7 @@ async def connection_to_principal(
     else:
         raise TypeError("connection must be connection id or ConnRecord")
 
+    conn_record = cast(ConnRecord, conn_record)
     framework = session.inject(GovernanceFramework, required=False)
     if not framework:
         raise NoLoadedFramework(
