@@ -1,28 +1,74 @@
 """Selector used to route principals to appropriate handlers for their privileges."""
 
-from asyncio import iscoroutinefunction
-from functools import wraps
-from typing import Awaitable, Callable, Dict, Union, cast
+from typing import (
+    Callable,
+    Dict,
+    Generic,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
+from typing_extensions import ParamSpec
 
 from .governance_framework import Principal
 
 
-PrincipalFinder = Callable[..., Union[Principal, dict]]
-AsyncPrincipalFinder = Callable[..., Awaitable[Union[Principal, dict]]]
-Condition = Callable[[Principal], bool]
+class NoOptionSelected(Exception):
+    """Raised when no option was selected and no default available."""
 
 
-def _asyncify(func) -> AsyncPrincipalFinder:
-    """Wrap method in asynchronous method for homogeneity."""
+Selected = TypeVar("Selected")
+ConditionParams = ParamSpec("ConditionParams")
 
-    if iscoroutinefunction(func):
+
+def select(
+    *options: Tuple[Callable[ConditionParams, bool], Selected],
+    default: Optional[Selected] = None,
+) -> Callable[ConditionParams, Selected]:
+    """Return one option based on a set of callables."""
+
+    def _select(
+        *args: ConditionParams.args, **kwargs: ConditionParams.kwargs
+    ) -> Selected:
+        for condition, alternative in options:
+            if condition(*args, **kwargs):
+                return alternative
+        if default:
+            return default
+        raise NoOptionSelected("No option selected and no default provided.")
+
+    return _select
+
+
+class Selector(Generic[Selected]):
+    """Enacts and enforces rules that govern execution flow."""
+
+    def __init__(self, selected: Optional[Type[Selected]] = None):
+        """Initialize Enforcer."""
+        self._options: Dict[Callable[..., bool], Selected] = {}
+        self._default: Optional[Selected] = None
+
+    def register(self, condition: Callable[..., bool]):
+        def _register(func: Selected):
+            self._options[condition] = func
+            return func
+
+        return _register
+
+    def default(self, func: Selected):
+        if self._default:
+            raise TypeError("Default is already set on selector.")
+        self._default = func
         return func
-    else:
 
-        async def _asyncified_function(*args, **kwargs):
-            return func(*args, **kwargs)
+    @property
+    def registered(self):
+        return self._options
 
-        return _asyncified_function
+    def __call__(self, *args, **kwargs) -> Selected:
+        return select(*self._options.items(), default=self._default)(*args, **kwargs)
 
 
 def _ensure_principal(value: Union[Principal, dict]) -> Principal:
@@ -39,69 +85,22 @@ def _ensure_principal(value: Union[Principal, dict]) -> Principal:
     )
 
 
-class Selector:
+class PrincipalSelector(Selector[Selected]):
     """Enacts and enforces rules that govern execution flow."""
 
-    def __init__(self, principal_finder: Union[PrincipalFinder, AsyncPrincipalFinder]):
+    def __init__(self, selected: Optional[Type[Selected]] = None):
         """Initialize Enforcer."""
-        self._principal_finder = principal_finder
-        self._finder_async = iscoroutinefunction(principal_finder)
-        self._governed = []
+        self._options: Dict[Callable[[Principal], bool], Selected] = {}
+        self._default: Optional[Selected] = None
 
-    def select(self, func: Callable):
-        """Decorate a function or method as requiring privileges."""
-        is_async = iscoroutinefunction(func)
-        if self._finder_async and not is_async:
-            raise TypeError(
-                "Handler must be asynchronous when principal finder is asynchronous"
-            )
+    def register(self, condition: Callable[[Principal], bool]):
+        def _register(func: Selected):
+            self._options[condition] = func
+            return func
 
-        alternatives: Dict[Callable, Callable] = {}
+        return _register
 
-        def register(condition: Callable[[Principal], bool]):
-            def _register(func: Callable):
-                if not is_async and iscoroutinefunction(func):
-                    raise TypeError(
-                        "Default handler is not async; "
-                        "registred handler must also be synchronous"
-                    )
-                alternatives[condition] = _asyncify(func) if is_async else func
-
-                return func
-
-            return _register
-
-        if is_async:
-            async_principal_finder = _asyncify(self._principal_finder)
-
-            @wraps(func)
-            async def _async_wrapper(*args, **kwargs):
-                """Check the rules and allow principal in if conditions met."""
-                principal = _ensure_principal(
-                    await async_principal_finder(*args, **kwargs)
-                )
-
-                for condition, alternative in alternatives.items():
-                    if condition(principal):
-                        return await alternative(*args, **kwargs)
-                return await func(*args, **kwargs)
-
-            wrapper = _async_wrapper
-        else:
-            principal_finder = cast(PrincipalFinder, self._principal_finder)
-
-            @wraps(func)
-            def _wrapper(*args, **kwargs):
-                """Check the rules and allow principal in if conditions met."""
-                principal = _ensure_principal(principal_finder(*args, **kwargs))
-                for condition, alternative in alternatives.items():
-                    if condition(principal):
-                        return alternative(*args, **kwargs)
-                return func(*args, **kwargs)
-
-            wrapper = _wrapper
-
-        self._governed.append(func)
-        wrapper.register = register
-        wrapper.alternatives = alternatives
-        return wrapper
+    def __call__(self, principal: Union[Principal, dict]) -> Selected:
+        return select(*self._options.items(), default=self._default)(
+            _ensure_principal(principal)
+        )
