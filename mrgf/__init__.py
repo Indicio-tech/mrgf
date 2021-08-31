@@ -10,8 +10,8 @@ from pydantic import BaseModel
 from .acapy import (
     connection_to_principal,
     connections_where,
-    request_context_principal_finder,
-    request_handler_principal_finder,
+    context_to_principal,
+    handler_args_to_principal,
 )
 from .governance_framework import (
     Condition,
@@ -24,7 +24,7 @@ from .governance_framework import (
     Privilege,
     Rule,
 )
-from .selector import Selector
+from .selector import Selector, select, PrincipalSelector
 
 
 LOGGER = logging.getLogger(__name__)
@@ -74,8 +74,10 @@ __all__ = [
     "Principal",
     "Rule",
     "Selector",
-    "request_handler_principal_finder",
-    "request_context_principal_finder",
+    "context_to_principal",
+    "handler_args_to_principal",
     "connection_to_principal",
     "connections_where",
+    "select",
+    "PrincipalSelector",
 ]
