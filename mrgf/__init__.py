@@ -24,7 +24,6 @@ from .governance_framework import (
     Privilege,
     Rule,
 )
-from .selector import Selector, select, PrincipalSelector
 
 
 LOGGER = logging.getLogger(__name__)
@@ -73,11 +72,8 @@ __all__ = [
     "Privilege",
     "Principal",
     "Rule",
-    "Selector",
     "context_to_principal",
     "handler_args_to_principal",
     "connection_to_principal",
     "connections_where",
-    "select",
-    "PrincipalSelector",
 ]
