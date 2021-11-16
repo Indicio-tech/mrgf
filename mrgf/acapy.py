@@ -23,7 +23,7 @@ async def connection_to_principal(
         raise TypeError("connection must be connection id or ConnRecord")
 
     conn_record = cast(ConnRecord, conn_record)
-    framework = session.inject(GovernanceFramework)
+    framework = session.inject_or(GovernanceFramework)
     if not framework:
         raise NoLoadedFramework(
             "No machine readable governance framework found in context"
