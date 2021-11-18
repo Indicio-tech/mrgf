@@ -54,19 +54,14 @@ async def set_mrgf(request: web.Request):
     context.injector.bind_instance(GovernanceFramework, loaded)
     return web.json_response({"success": True})
 
+
 @docs(
     tags=["mrgf"],
     summary="Get MRGF currently loaded by agent.",
     responses={
         "200": {
             "description": "mrgf",
-            "content": {
-                "application/json": {
-                    "schema": {
-                        "type": "object"
-                    }
-                }
-            }
+            "content": {"application/json": {"schema": {"type": "object"}}},
         }
     },
 )
@@ -77,15 +72,11 @@ async def get_mrgf(request: web.Request):
     framework = context.inject(GovernanceFramework)
     return web.json_response(framework.dict(by_alias=True))
 
+
 async def register(app: web.Application):
     """Register routes."""
 
-    app.add_routes(
-        [
-            web.post("/mrgf", set_mrgf),
-            web.get("/mrgf", get_mrgf),
-        ]
-    )
+    app.add_routes([web.post("/mrgf", set_mrgf), web.get("/mrgf", get_mrgf)])
 
 
 def post_process_routes(app: web.Application):
