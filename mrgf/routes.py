@@ -34,18 +34,48 @@ async def set_mrgf(request: web.Request):
         raise web.HTTPBadRequest(reason="Expected mrgf as json body")
 
     context: AdminRequestContext = request["context"]
-    framework = context.inject(GovernanceFramework)
-    assert framework
+    framework = context.inject_or(GovernanceFramework)
+    if framework:
+
+        try:
+            loaded = GovernanceFramework(**body)
+        except ValueError as err:
+            raise web.HTTPBadRequest(reason="Bad MRGF passed: {}".format(err))
+
+        LOGGER.warning("Replacing MRGF with new MRGF from routes: %s", loaded)
+        framework.update(loaded)
+        return web.json_response({"success": True})
 
     try:
         loaded = GovernanceFramework(**body)
     except ValueError as err:
         raise web.HTTPBadRequest(reason="Bad MRGF passed: {}".format(err))
 
-    LOGGER.warning("Replacing MRGF with new MRGF from routes: %s", loaded)
-    framework.update(loaded)
+    context.injector.bind_instance(GovernanceFramework, loaded)
     return web.json_response({"success": True})
 
+@docs(
+    tags=["mrgf"],
+    summary="Get MRGF currently loaded by agent.",
+    responses={
+        "200": {
+            "description": "mrgf",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object"
+                    }
+                }
+            }
+        }
+    },
+)
+async def get_mrgf(request: web.Request):
+    """Get MRGF."""
+
+    context: AdminRequestContext = request["context"]
+    framework = context.inject(GovernanceFramework)
+    return web.json_response(framework.dict(by_alias=True))
 
 async def register(app: web.Application):
     """Register routes."""
@@ -53,6 +83,7 @@ async def register(app: web.Application):
     app.add_routes(
         [
             web.post("/mrgf", set_mrgf),
+            web.get("/mrgf", get_mrgf),
         ]
     )
 
