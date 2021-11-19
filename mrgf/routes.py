@@ -35,24 +35,17 @@ async def set_mrgf(request: web.Request):
 
     context: AdminRequestContext = request["context"]
     framework = context.inject_or(GovernanceFramework)
-    if framework:
-
-        try:
-            loaded = GovernanceFramework(**body)
-        except ValueError as err:
-            raise web.HTTPBadRequest(reason="Bad MRGF passed: {}".format(err))
-
-        LOGGER.warning("Replacing MRGF with new MRGF from routes: %s", loaded)
-        framework.update(loaded)
-        return web.json_response({"success": True})
+    if not framework:
+        raise web.HTTPBadRequest(reason="MRGF can only be modified if already present")
 
     try:
         loaded = GovernanceFramework(**body)
     except ValueError as err:
         raise web.HTTPBadRequest(reason="Bad MRGF passed: {}".format(err))
 
-    context.injector.bind_instance(GovernanceFramework, loaded)
-    return web.json_response({"success": True})
+    LOGGER.warning("Replacing MRGF with new MRGF from routes: %s", loaded)
+    framework.update(loaded)
+    return web.json_response({"success": True, "mrgf": framework.dict(by_alias=True)})
 
 
 @docs(
@@ -69,7 +62,9 @@ async def get_mrgf(request: web.Request):
     """Get MRGF."""
 
     context: AdminRequestContext = request["context"]
-    framework = context.inject(GovernanceFramework)
+    framework = context.inject_or(GovernanceFramework)
+    if not framework:
+        raise web.HTTPNotFound(reason="No Governance Framework loaded")
     return web.json_response(framework.dict(by_alias=True))
 
 
